@@ -25,16 +25,45 @@ def create_tables():
         logging.error(f"테이블 생성 중 오류 발생: {e}")
 
 def get_all_sentences():
-    sentences = []
+    phone_calls = []
+    current_call = []
+
     try:
         with SessionLocal() as session:
-            query = text("SELECT JSON_EXTRACT(call_data, '$.sentence') FROM PhoneCalls")
+            query = text("""
+                SELECT JSON_UNQUOTE(JSON_EXTRACT(call_data, '$.phone_number')) as phone_number,
+                        JSON_UNQUOTE(JSON_EXTRACT(call_data, '$.sentence')) as sentence,
+                        JSON_EXTRACT(call_data, '$.iscall_start') as iscall_start,
+                        JSON_EXTRACT(call_data, '$.iscall_end') as iscall_end
+                FROM PhoneCalls
+                ORDER BY id
+            """)
+            
             result = session.execute(query)
-            sentences = [row[0] for row in result]
-        logging.info(f"{len(sentences)}개의 문장을 가져왔습니다.")
+            
+            for row in result:
+                phone_number, sentence, iscall_start, iscall_end = row
+
+                if iscall_start == 'true':
+                    if current_call:
+                        phone_calls.append(current_call)
+                    current_call = [(phone_number, sentence)]
+                else:
+                    current_call.append((phone_number, sentence))
+
+                if iscall_end == 'true':
+                    phone_calls.append(current_call)
+                    current_call = []
+
+            if current_call:
+                phone_calls.append(current_call)
+
+        logging.info(f"{len(phone_calls)}개의 통화 데이터를 가져왔습니다.")
+        return phone_calls
+
     except SQLAlchemyError as e:
-        logging.error(f"문장 조회 중 오류 발생: {e}")
-    return sentences
+        logging.error(f"통화 데이터 조회 중 오류 발생: {e}")
+        return []
 
 if __name__ == "__main__":
-    create_tables()
+    print(get_all_sentences())
