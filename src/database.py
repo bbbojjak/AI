@@ -2,6 +2,9 @@ import mysql.connector
 from mysql.connector import Error
 from config import MYSQL_HOST, MYSQL_USER, MYSQL_PASSWORD, MYSQL_DATABASE
 import logging
+from config import setup_logging
+
+setup_logging()
 
 def create_connection():
     connection = None
