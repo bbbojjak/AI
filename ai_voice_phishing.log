@@ -27,3 +27,57 @@ New scraping session started at 2024-09-05 16:03:18
 2024-09-05 16:03:18 - INFO - MariaDB 데이터베이스 연결 성공
 2024-09-05 16:03:18 - INFO - 3개의 문장을 가져왔습니다.
 2024-09-05 16:03:18 - INFO - MySQL 연결이 닫혔습니다.
+
+==================================================
+New scraping session started at 2024-09-05 18:45:47
+==================================================
+2024-09-05 18:45:48 - ERROR - 문장 조회 오류: (mysql.connector.errors.DatabaseError) 1273 (HY000): Unknown collation: 'utf8mb4_0900_ai_ci'
+(Background on this error at: https://sqlalche.me/e/20/4xp6)
+
+==================================================
+New scraping session started at 2024-09-05 18:46:41
+==================================================
+2024-09-05 18:46:41 - ERROR - 데이터베이스 연결 오류: (mysql.connector.errors.DatabaseError) 1273 (HY000): Unknown collation: 'utf8mb4_0900_ai_ci'
+(Background on this error at: https://sqlalche.me/e/20/4xp6)
+
+==================================================
+New scraping session started at 2024-09-05 18:47:01
+==================================================
+2024-09-05 18:47:01 - ERROR - 데이터베이스 연결 오류: (mysql.connector.errors.DatabaseError) 1273 (HY000): Unknown collation: 'utf8mb4_0900_ai_ci'
+(Background on this error at: https://sqlalche.me/e/20/4xp6)
+2024-09-05 18:47:01 - ERROR - 테이블 생성 오류: (mysql.connector.errors.DatabaseError) 1273 (HY000): Unknown collation: 'utf8mb4_0900_ai_ci'
+(Background on this error at: https://sqlalche.me/e/20/4xp6)
+
+==================================================
+New scraping session started at 2024-09-05 18:49:26
+==================================================
+2024-09-05 18:49:26 - ERROR - 데이터베이스 연결 오류: (mysql.connector.errors.DatabaseError) 1273 (HY000): Unknown collation: 'utf8mb4_0900_ai_ci'
+(Background on this error at: https://sqlalche.me/e/20/4xp6)
+
+==================================================
+New scraping session started at 2024-09-05 18:49:48
+==================================================
+2024-09-05 18:49:48 - ERROR - 데이터베이스 연결 오류: (mysql.connector.errors.DatabaseError) 1273 (HY000): Unknown collation: 'utf8mb4_0900_ai_ci'
+(Background on this error at: https://sqlalche.me/e/20/4xp6)
+2024-09-05 18:49:48 - ERROR - 테이블 생성 오류: (mysql.connector.errors.DatabaseError) 1273 (HY000): Unknown collation: 'utf8mb4_0900_ai_ci'
+(Background on this error at: https://sqlalche.me/e/20/4xp6)
+
+==================================================
+New scraping session started at 2024-09-06 00:39:51
+==================================================
+
+==================================================
+New session started at 2024-09-06 00:41:03
+==================================================
+2024-09-06 00:41:13 - ERROR - 테이블 생성 중 오류 발생: (pymysql.err.OperationalError) (2003, "Can't connect to MySQL server on '172.20.4.133' (timed out)")
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+
+==================================================
+New session started at 2024-09-06 00:44:20
+==================================================
+2024-09-06 00:44:21 - INFO - 테이블이 성공적으로 생성되었습니다.
+
+==================================================
+New session started at 2024-09-06 00:44:29
+==================================================
+2024-09-06 00:44:29 - INFO - 3개의 문장을 가져왔습니다.
