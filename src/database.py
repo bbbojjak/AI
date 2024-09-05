@@ -56,3 +56,29 @@ def create_tables():
             connection.close()
             logging.info("MySQL 연결이 닫혔습니다.")
 
+def get_all_sentences():
+    connection = create_connection()
+    if connection is None:
+        return []
+
+    cursor = connection.cursor()
+    sentences = []
+
+    try:
+        query = "SELECT JSON_EXTRACT(call_data, '$.sentence') FROM PhoneCalls"
+        cursor.execute(query)
+        results = cursor.fetchall()
+        
+        for row in results:
+            sentences.append(row[0])
+        
+        logging.info(f"{len(sentences)}개의 문장을 가져왔습니다.")
+        return sentences
+    except Error as e:
+        logging.error(f"문장 조회 오류: {e}")
+        return []
+    finally:
+        if connection.is_connected():
+            cursor.close()
+            connection.close()
+            logging.info("MySQL 연결이 닫혔습니다.")
