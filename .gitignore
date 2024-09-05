@@ -1,0 +1,7 @@
+# 로그 파일 무시
+ai_voice_phishing.log
+
+# 분석 결과 JSON 파일 무시
+phishing_analysis_results.json
+
+.env
