@@ -2,7 +2,6 @@ import mysql.connector
 from mysql.connector import Error
 from config import MYSQL_HOST, MYSQL_USER, MYSQL_PASSWORD, MYSQL_DATABASE
 import logging
-import json
 
 def create_connection():
     connection = None
@@ -27,25 +26,25 @@ def create_tables():
 
     cursor = connection.cursor()
 
-    # News 테이블 생성
-    create_news_table = """
-    CREATE TABLE IF NOT EXISTS Call (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            call_data JSON,
-            CONSTRAINT check_call_data CHECK (
-                JSON_VALID(call_data) AND
-                JSON_TYPE(JSON_EXTRACT(call_data, '$.phone_number')) = 'STRING' AND
-                JSON_TYPE(JSON_EXTRACT(call_data, '$.sentence')) = 'STRING' AND
-                JSON_TYPE(JSON_EXTRACT(call_data, '$.iscall_start')) = 'BOOLEAN' AND
-                JSON_TYPE(JSON_EXTRACT(call_data, '$.iscall_end')) = 'BOOLEAN'
-            )
+    # PhoneCalls 테이블 생성
+    create_phone_calls_table = """
+    CREATE TABLE IF NOT EXISTS PhoneCalls (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        call_data JSON,
+        CONSTRAINT check_call_data CHECK (
+            JSON_VALID(call_data) AND
+            JSON_TYPE(JSON_EXTRACT(call_data, '$.phone_number')) = 'STRING' AND
+            JSON_TYPE(JSON_EXTRACT(call_data, '$.sentence')) = 'STRING' AND
+            JSON_TYPE(JSON_EXTRACT(call_data, '$.iscall_start')) = 'BOOLEAN' AND
+            JSON_TYPE(JSON_EXTRACT(call_data, '$.iscall_end')) = 'BOOLEAN'
+        )
     );
     """
 
     try:
-        cursor.execute(create_news_table)
+        cursor.execute(create_phone_calls_table)
         connection.commit()
-        logging.info("Call 테이블이 생성되었습니다 (이미 존재할 경우 제외).")
+        logging.info("PhoneCalls 테이블이 생성되었습니다 (이미 존재할 경우 제외).")
     except Error as e:
         logging.error(f"테이블 생성 오류: {e}")
     finally:
