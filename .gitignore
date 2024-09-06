@@ -7,4 +7,5 @@ phishing_analysis_results.json
 .env
 
 #이진 파일
-.pyc
+__pycache__/
+
