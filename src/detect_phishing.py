@@ -25,7 +25,7 @@ template_string = """
 
 def detect_phishing(dialogue_content):
     """
-    대화 내용을 GPT API로 분석하여 피싱 위험도를 계산하고, 긴급 및 주의 여부를 반환하는 함수.
+    해당 내용을 GPT API로 분석하여 피싱 위험도를 계산하고, 긴급 및 주의 여부를 반환하는 함수.
 
     Args:
         dialogue_content (str): 대화 내용
