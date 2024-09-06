@@ -50,6 +50,13 @@ def detect_phishing(dialogue_content):
     # 응답을 딕셔너리 형태로 변환
     output_dict = output_parser.parse(customer_response)
 
+    # hallucination 이슈 해결
+    percent = int(output_dict['위험도'].strip('%'))
+
+    # 위험도가 70% 이상이면 긴급을 True로 설정
+    if percent >= 70:
+        output_dict['긴급'] = 'True'
+    
     # 긴급이 True이면 주의 설정을 False로 변경
     if output_dict['긴급'] == 'True':
         output_dict['주의'] = 'False'
