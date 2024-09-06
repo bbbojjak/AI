@@ -46,3 +46,7 @@ async def analyze_phishing():
 
     # 결과를 JSON 형태로 반환
     return {"results": phishing_analysis_results}
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("fastapi_app:app", host="0.0.0.0", port=8000, reload=True)
