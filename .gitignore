@@ -5,3 +5,6 @@ ai_voice_phishing.log
 phishing_analysis_results.json
 # 환경변수 파일
 .env
+
+#이진 파일
+.pyc
