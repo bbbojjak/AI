@@ -1,9 +1,31 @@
 from fastapi import FastAPI
+from pydantic import BaseModel
+from typing import List
 from database import get_all_sentences
 from detect_phishing import detect_phishing
-import json
 
 app = FastAPI()
+
+# Pydantic 모델 정의
+class PhishingResult(BaseModel):
+    phone_number: str
+    dialogue: str
+    위험도: int
+    판단기준: str
+    주의: str
+    긴급: str
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "phone_number": "01012345678",
+                "dialogue": "안녕하세요, 고객님. 저는 OO은행의 직원입니다. 귀하의 계좌에 이상 거래가 발생했습니다. 보안 강화를 위해 계좌 정보를 확인해야 합니다.",
+                "위험도": 85,
+                "판단기준": "공식 기관을 사칭하며 민감한 정보(계좌 정보) 요청은 일반적인 피싱 수법.",
+                "주의": "False",
+                "긴급": "True"
+            }
+        }
 
 # Root 엔드포인트 (확인용)
 @app.get("/")
@@ -11,7 +33,7 @@ async def read_root():
     return {"message": "Welcome to the Phishing Detection API!"}
 
 # 피싱 분석 엔드포인트
-@app.get("/analyze")
+@app.get("/analyze", response_model=List[PhishingResult])
 async def analyze_phishing():
     # 통화 데이터를 가져옴
     phone_calls = get_all_sentences()
