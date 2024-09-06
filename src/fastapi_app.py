@@ -2,7 +2,7 @@
 
 from fastapi import FastAPI
 from database import get_all_sentences
-from detect_phising import detect_phishing
+from detect_phishing import detect_phishing
 import json
 
 app = FastAPI()
