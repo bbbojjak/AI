@@ -33,9 +33,9 @@ for call in phone_calls:
         phishing_analysis_results.append(analysis_result)
 
 # 결과 출력
-# for result in phishing_analysis_results:
-#     print(json.dumps(result, ensure_ascii=False, indent=4))
+for result in phishing_analysis_results:
+    print(json.dumps(result, ensure_ascii=False, indent=4))
 
 # 결과를 json 파일로 저장 (선택적)
-with open('phishing_analysis_results.json', 'w', encoding='utf-8') as f:
-    json.dump(phishing_analysis_results, f, ensure_ascii=False, indent=4)
+# with open('phishing_analysis_results.json', 'w', encoding='utf-8') as f:
+#     json.dump(phishing_analysis_results, f, ensure_ascii=False, indent=4)
