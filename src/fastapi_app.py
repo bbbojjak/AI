@@ -37,9 +37,10 @@ async def analyze_phishing():
             analysis_result = {
                 "phone_number": phone_number,
                 "dialogue": accumulated_dialogue.strip(),
-                "위험도": result['위험도'],
-                "주의": result['주의'],
-                "긴급": result['긴급']
+                "위험도": result.get("위험도", "N/A"),
+                "판단기준": result.get("판단기준", "N/A"),
+                "주의": result.get("주의", "N/A"),
+                "긴급": result.get("긴급", "N/A")
             }
             phishing_analysis_results.append(analysis_result)
 
