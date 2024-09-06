@@ -1,12 +1,9 @@
-# main.py
-
 from database import get_all_sentences
 from detect_phishing import detect_phishing
 import json
 
 # 통화 데이터를 가져옴
 phone_calls = get_all_sentences()
-
 # 결과 저장을 위한 리스트
 phishing_analysis_results = []
 
@@ -18,19 +15,20 @@ for call in phone_calls:
     # 누적하여 대화를 결합하고 매번 피싱 분석
     for _, sentence in call:
         accumulated_dialogue += sentence + " "
-
         # 피싱 분석 함수 호출
-        result = detect_phishing(accumulated_dialogue.strip())
-
+        
+        result = detect_phishing(accumulated_dialogue.strip())  # gpt_api_test.py에서 가져온 함수
         # 분석 결과 저장
         analysis_result = {
             "phone_number": phone_number,
             "dialogue": accumulated_dialogue.strip(),
-            "위험도": result['위험도'],
-            "주의": result['주의'],
-            "긴급": result['긴급']
+            "위험도": result.get('위험도', 'N/A'),
+            "판단기준": result.get('판단기준', 'N/A'),
+            "주의": result.get('주의', 'N/A'),
+            "긴급": result.get('긴급', 'N/A')
         }
         phishing_analysis_results.append(analysis_result)
+
 
 # 결과 출력
 for result in phishing_analysis_results:
