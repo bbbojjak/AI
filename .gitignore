@@ -6,3 +6,7 @@ ai_voice_phishing.log
 
 # 환경변수 파일
 .env
+
+#이진 파일
+__pycache__/
+
