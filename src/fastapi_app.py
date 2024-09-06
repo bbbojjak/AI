@@ -14,11 +14,13 @@ model = whisper.load_model("base")
 
 # Pydantic 모델 정의
 class PhishingResult(BaseModel):
+    transcribed_text: str  # transcribed_text를 모델에 포함
     phishing_result: Dict[str, Union[str, int]]  # 위험도는 int 또는 str로 가능하도록 Union 사용
     
     class Config:
         schema_extra = {
             "example": {
+                "transcribed_text": "안녕하세요, 고객님. 저는 OO은행의 직원입니다.",
                 "phishing_result": {
                     "위험도": 85,
                     "판단기준": "공식 기관을 사칭하며 민감한 정보(계좌 정보) 요청은 일반적인 피싱 수법.",
@@ -61,6 +63,7 @@ async def analyze_call_recording(file: UploadFile = File(...)):
 
     # 결과 반환
     return {
+        "transcribed_text": transcribed_text,
         "phishing_result": phishing_result,
     }
 
