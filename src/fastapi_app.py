@@ -1,29 +1,30 @@
-from fastapi import FastAPI
-from pydantic import BaseModel
-from typing import List
-from database import get_all_sentences
+import os
+import whisper
+from fastapi import FastAPI, File, UploadFile
 from detect_phishing import detect_phishing
+from pydantic import BaseModel
+from typing import Dict, Union
+import shutil
 
+# FastAPI 인스턴스 생성
 app = FastAPI()
+
+# Whisper 모델 로드 (한 번만 로드)
+model = whisper.load_model("base")
 
 # Pydantic 모델 정의
 class PhishingResult(BaseModel):
-    phone_number: str
-    dialogue: str
-    위험도: int
-    판단기준: str
-    주의: str
-    긴급: str
-
+    phishing_result: Dict[str, Union[str, int]]  # 위험도는 int 또는 str로 가능하도록 Union 사용
+    
     class Config:
         schema_extra = {
             "example": {
-                "phone_number": "01012345678",
-                "dialogue": "안녕하세요, 고객님. 저는 OO은행의 직원입니다. 귀하의 계좌에 이상 거래가 발생했습니다. 보안 강화를 위해 계좌 정보를 확인해야 합니다.",
-                "위험도": 85,
-                "판단기준": "공식 기관을 사칭하며 민감한 정보(계좌 정보) 요청은 일반적인 피싱 수법.",
-                "주의": "False",
-                "긴급": "True"
+                "phishing_result": {
+                    "위험도": 85,
+                    "판단기준": "공식 기관을 사칭하며 민감한 정보(계좌 정보) 요청은 일반적인 피싱 수법.",
+                    "주의": "False",
+                    "긴급": "True"
+                }
             }
         }
 
@@ -32,47 +33,36 @@ class PhishingResult(BaseModel):
 async def read_root():
     return {"message": "Welcome to the Phishing Detection API!"}
 
-# 피싱 분석 엔드포인트
-@app.get("/analyze", response_model=List[PhishingResult])
-async def analyze_phishing():
-    # 통화 데이터를 가져옴
-    phone_calls = get_all_sentences()
+# 통화 녹음 파일을 받아서 텍스트로 변환하고 피싱 탐지 결과 반환
+@app.post("/analyze", response_model=PhishingResult)
+async def analyze_call_recording(file: UploadFile = File(...)):
+    # 파일 저장
+    file_path = f"data/{file.filename}"
+    os.makedirs("data", exist_ok=True)
+    
+    with open(file_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
 
-    # 전화번호별로 대화를 저장할 딕셔너리
-    phone_dialogues = {}
+    # Whisper를 사용하여 음성 파일을 텍스트로 변환
+    transcription_result = model.transcribe(file_path)
 
-    # 전화번호별 대화를 누적하여 결합
-    for call in phone_calls:
-        phone_number = call[0][0]  # 전화번호는 동일하므로 첫 번째 데이터를 사용
-        accumulated_dialogue = phone_dialogues.get(phone_number, "")
+    # 변환된 텍스트
+    transcribed_text = transcription_result['text']
 
-        # 누적하여 대화를 결합
-        for _, sentence in call:
-            accumulated_dialogue += sentence + " "
-        
-        phone_dialogues[phone_number] = accumulated_dialogue.strip()
+    # 피싱 탐지 수행
+    phishing_result = detect_phishing(transcribed_text)
 
-    # 결과 저장을 위한 리스트
-    phishing_analysis_results = []
+    # 반환된 phishing_result 구조가 예상된 형식인지 확인
+    if isinstance(phishing_result.get('위험도'), str):
+        try:
+            phishing_result['위험도'] = int(phishing_result['위험도'].strip('%'))  # 문자열이면 % 제거 후 변환
+        except ValueError:
+            pass  # 변환 실패 시 원본 유지
 
-    # 각 전화번호별로 누적된 대화에 대해 한 번만 피싱 분석 수행
-    for phone_number, dialogue in phone_dialogues.items():
-        # 피싱 분석 함수 호출
-        result = detect_phishing(dialogue)
-
-        # 분석 결과 저장
-        analysis_result = {
-            "phone_number": phone_number,
-            "dialogue": dialogue,
-            "위험도": result.get("위험도", "N/A"),
-            "판단기준": result.get("판단기준", "N/A"),
-            "주의": result.get("주의", "N/A"),
-            "긴급": result.get("긴급", "N/A")
-        }
-        phishing_analysis_results.append(analysis_result)
-
-    # results 키 없이 데이터를 바로 반환
-    return phishing_analysis_results
+    # 결과 반환
+    return {
+        "phishing_result": phishing_result,
+    }
 
 if __name__ == "__main__":
     import uvicorn
