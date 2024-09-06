@@ -3,7 +3,7 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 from detect_phishing import detect_phishing  # 피싱 탐지 함수
 
 # 엑셀 파일을 읽음
-data_file_path = 'src/성능평가_데이터.xlsx'
+data_file_path = 'data/성능평가_데이터.xlsx'
 df = pd.read_excel(data_file_path)
 
 # 실제 값 (spam, ham)
